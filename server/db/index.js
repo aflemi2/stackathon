@@ -10,19 +10,21 @@ const syncAndSeed = ()=>{
   .then(()=> {
     return Promise.all([
       Dancer.create({name: 'RoboCop'}),
-      ImageURL.create({name: '/images/RoboCop1.jpg'}),
-      ImageURL.create({name: '/images/RoboCop2.jpg'}),
-      ImageURL.create({name: '/images/RoboCop3.jpg'}),
-      ImageURL.create({name: '/images/RoboCop4.jpg'}),
-      ImageURL.create({name: '/images/RoboCop5.jpg'}),
+      ImageURL.create({name: '/images/roboCop1.jpg'}),
+      ImageURL.create({name: '/images/roboCop2.jpg'}),
+      ImageURL.create({name: '/images/roboCop3.jpg'}),
+      ImageURL.create({name: '/images/roboCop4.jpg'}),
+      ImageURL.create({name: '/images/roboCop5.jpg'}),
+      ImageURL.create({name: '/images/roboCop6.jpg'}),
       ])
-    .then(([dancer, img1, img2, img3, img4, img5])=>{
+    .then(([dancer, img1, img2, img3, img4, img5, img6])=>{
      return Promise.all([
        img1.setDancer(dancer),
        img2.setDancer(dancer),
        img3.setDancer(dancer),
        img4.setDancer(dancer),
        img5.setDancer(dancer),
+       img6.setDancer(dancer),
      ]);
     });
   })
