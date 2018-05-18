@@ -1,0 +1,7 @@
+body {
+	background-color: rgb(192, 199, 204);
+}
+
+.fadein { position:relative; height:300px;  }
+.fadein img { position:absolute; left:0; top:0; transition:opacity 20ms; opacity:90; }
+.fadein img.is-hidden { opacity:0; }
