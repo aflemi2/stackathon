@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import listen from './listen';
 
 class Dancer extends React.Component {
   constructor(props) {
@@ -11,7 +12,12 @@ class Dancer extends React.Component {
       slideCount: 0
     };
     this.onPlay = this.onPlay.bind(this);
+    this.onListen = this.onListen.bind(this);
   }
+
+  // componentDidMount(){
+  //   //this.respond = listen();
+  // }
 
   onPlay(){
     let { autoplay, slideCount } =this.state;
@@ -22,7 +28,7 @@ class Dancer extends React.Component {
       this.setState({autoplay:true});
       this.interval = setInterval(()=>{
         const imageTotal = this.props.dancerImages.length - 1;
-        if(slideCount>imageTotal){
+        if(slideCount>=imageTotal){
           slideCount = 0;
          this.setState({slideCount:slideCount});
         } else {
@@ -32,11 +38,32 @@ class Dancer extends React.Component {
     }
   }
 
+  onListen() {
+    let { slideCount } =this.state;
+    if(this.state.responsive){
+      console.log(listen());
+      if(listen()){
+        console.log('changing image');
+        const imageTotal = this.props.dancerImages.length - 1;
+        if(slideCount>=imageTotal){
+          slideCount = 0;
+         this.setState({slideCount:slideCount});
+        } else {
+         return this.setState({slideCount:slideCount++});
+        }
+      }
+    } else {
+      this.setState({responsive:true});
+
+    }
+    }
+
   render() {
     const { dancerImages, dancer } = this.props;
-    const { autoplay, slideCount } = this.state;
-    const { onPlay } = this;
+    const { autoplay, slideCount, responsive } = this.state;
+    const { onPlay, onListen } = this;
     const playButton = autoplay === true ? 'Pause' : 'Play';
+    const toggleButton = responsive ? 'Mic On' : 'Mic Off';
     if (dancerImages.length === 0) {
       return (
         <div className="container">
@@ -45,6 +72,7 @@ class Dancer extends React.Component {
         </div>
       );
     }
+
     return (
       <div className="container">
         <Link to='/images/create' className="btn btn-outline-dark float-right">Add Images</Link>
@@ -52,6 +80,7 @@ class Dancer extends React.Component {
         <hr />
 
         <button onClick={onPlay}>{playButton}</button>
+        <button onClick={onListen} id="toggle-button">{toggleButton}</button>
         {/* className breaks this^ button? */}
         <div className='fadein'>
           {dancerImages &&

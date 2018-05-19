@@ -28971,6 +28971,10 @@ var _reactRedux = __webpack_require__(8);
 
 var _reactRouterDom = __webpack_require__(9);
 
+var _listen = __webpack_require__(141);
+
+var _listen2 = _interopRequireDefault(_listen);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -28993,8 +28997,13 @@ var Dancer = function (_React$Component) {
       slideCount: 0
     };
     _this.onPlay = _this.onPlay.bind(_this);
+    _this.onListen = _this.onListen.bind(_this);
     return _this;
   }
+
+  // componentDidMount(){
+  //   //this.respond = listen();
+  // }
 
   _createClass(Dancer, [{
     key: 'onPlay',
@@ -29012,13 +29021,34 @@ var Dancer = function (_React$Component) {
         this.setState({ autoplay: true });
         this.interval = setInterval(function () {
           var imageTotal = _this2.props.dancerImages.length - 1;
-          if (slideCount > imageTotal) {
+          if (slideCount >= imageTotal) {
             slideCount = 0;
             _this2.setState({ slideCount: slideCount });
           } else {
             return _this2.setState({ slideCount: slideCount++ });
           }
         }, 180);
+      }
+    }
+  }, {
+    key: 'onListen',
+    value: function onListen() {
+      var slideCount = this.state.slideCount;
+
+      if (this.state.responsive) {
+        console.log((0, _listen2.default)());
+        if ((0, _listen2.default)()) {
+          console.log('changing image');
+          var imageTotal = this.props.dancerImages.length - 1;
+          if (slideCount >= imageTotal) {
+            slideCount = 0;
+            this.setState({ slideCount: slideCount });
+          } else {
+            return this.setState({ slideCount: slideCount++ });
+          }
+        }
+      } else {
+        this.setState({ responsive: true });
       }
     }
   }, {
@@ -29029,10 +29059,13 @@ var Dancer = function (_React$Component) {
           dancer = _props.dancer;
       var _state2 = this.state,
           autoplay = _state2.autoplay,
-          slideCount = _state2.slideCount;
-      var onPlay = this.onPlay;
+          slideCount = _state2.slideCount,
+          responsive = _state2.responsive;
+      var onPlay = this.onPlay,
+          onListen = this.onListen;
 
       var playButton = autoplay === true ? 'Pause' : 'Play';
+      var toggleButton = responsive ? 'Mic On' : 'Mic Off';
       if (dancerImages.length === 0) {
         return _react2.default.createElement(
           'div',
@@ -29049,6 +29082,7 @@ var Dancer = function (_React$Component) {
           )
         );
       }
+
       return _react2.default.createElement(
         'div',
         { className: 'container' },
@@ -29067,6 +29101,11 @@ var Dancer = function (_React$Component) {
           'button',
           { onClick: onPlay },
           playButton
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: onListen, id: 'toggle-button' },
+          toggleButton
         ),
         _react2.default.createElement(
           'div',
@@ -29108,6 +29147,87 @@ var mapStateToProps = function mapStateToProps(_ref, _ref2) {
 };
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(Dancer);
+
+/***/ }),
+/* 141 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function () {
+
+  var toggleEffectsButton = document.getElementById("toggle-button");
+
+  /* Globals */
+  var audioContext = void 0;
+  var micSensitivityValue = 1500;
+  var on = false;
+
+  /* Event handlers */
+  toggleEffectsButton.addEventListener("click", toggleEffects);
+
+  /* Helper functions */
+  function toggleEffects(e) {
+    if (!on) {
+      on = true;
+      audioContext = new AudioContext();
+      navigator.getUserMedia({ audio: true }, handleUserMediaStream, handleUserMediaError);
+    } else {
+      reset();
+    }
+  }
+
+  function reset() {
+    on = false;
+    audioContext.close();
+  }
+
+  function handleUserMediaStream(stream) {
+    var mediaStreamSource = audioContext.createMediaStreamSource(stream);
+    var processor = createProcessor();
+
+    mediaStreamSource.connect(processor);
+  }
+
+  function handleUserMediaError(err) {
+    console.log(err);
+  }
+
+  function createProcessor() {
+    var processor = audioContext.createScriptProcessor();
+    processor.volume = 0;
+
+    processor.onaudioprocess = handleAudioProcess;
+    processor.connect(audioContext.destination);
+
+    return processor;
+  }
+
+  function handleAudioProcess(e) {
+    var buffer = e.inputBuffer.getChannelData(0);
+
+    var sum = 0;
+    var x = void 0;
+
+    for (var i = 0; i < buffer.length; i++) {
+      x = Math.abs(buffer[i]);
+      sum += x * x;
+    }
+
+    var average = sum / buffer.length;
+    this.volume = Math.floor(average * micSensitivityValue);
+
+    detectAudio(this.volume);
+  }
+
+  function detectAudio(micValue) {
+    if (micValue > 100) {
+      console.log('I hear ya.');
+      return true;
+    }
+  }
+};
 
 /***/ })
 /******/ ]);
