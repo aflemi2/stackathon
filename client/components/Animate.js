@@ -1,7 +1,4 @@
 
-
-
-
     <div class="fadein">
         <img src="/images/roboCop4.jpg" class="is-hidden">
         <img src="/images/roboCop3.jpg" class="">
