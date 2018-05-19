@@ -3,8 +3,9 @@ import { HashRouter as Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Nav from './Nav';
 import Home from './Home';
-// import Students from './Students';
-// import Campuses from './Campuses';
+import Images from './Images';
+import Dancers from './Dancers';
+import Dancer from './Dancer';
 
 import { loadDancers } from '../redux/dancers';
 import { loadImages } from '../redux/images';
@@ -22,8 +23,9 @@ class Main extends Component {
         <div>
           <Nav />
           <Route path='/' exact component={Home} />
-          {/* <Route path='/students' exact component={Dancers} />
-          <Route path='/campuses' exact component={Images} />  */}
+          <Route path='/images' exact component={Images} />
+          <Route path='/dancers' exact component={Dancers} />
+          <Route path='/dancers/:id' exact render={({match, history})=> <Dancer id={ match.params.id * 1} history={ history } /> } />
         </div>
       </Router>
     );

@@ -1,5 +1,7 @@
 body {
 	background-color: rgb(192, 199, 204);
+	font-family: Anton;
+	/* font-family: Permanent Marker; */
 }
 
 .fadein { position:relative; height:300px;  }

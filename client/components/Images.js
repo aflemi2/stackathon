@@ -17,9 +17,9 @@ const Images = ({ images, dancers }) => {
       <h2>Dancer Images</h2>
       <hr />
       <ul className="row">
-        {
+        { images &&
           images.map(image => {
-            const dancer = dancers.find(dancer => dancer.id === image.imageId);
+            const dancer = dancers.find(dancer => dancer.id === image.dancerId);
             if (image.name) {
               return (
                 <div key={image.id} className="col-sm">
@@ -37,6 +37,7 @@ const Images = ({ images, dancers }) => {
 };
 
 const mapStateToProps = ({ images, dancers }) => {
+
   return {
     images,
     dancers

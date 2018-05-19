@@ -12,18 +12,18 @@ const Nav = ({ dancers, images })=> {
 
   return (
     <div className="navbar navbar-expand-md navbar-dark bg-dark mb-4 row justify-content-between" >
-      <div className="nav-item col-4">
-        <NavLink className="nav-link" to='/'>
+      <div >
+        <NavLink className="btn btn-dark btn-outline-light" to='/'>
           Home
         </NavLink>
       </div>
-      <div className="nav-item">
-        <NavLink className="nav-link" to='/dancers'>
+      <div>
+        <NavLink className="btn btn-dark btn-outline-light" to='/dancers'>
           Dancers ({ dancers.length })
         </NavLink>
       </div>
-      <div className="nav-item">
-      <NavLink className="nav-link" to='/images'>
+      <div>
+        <NavLink className="btn btn-dark btn-outline-light" to='/images'>
          Images ({ images.length })
         </NavLink>
       </div>
