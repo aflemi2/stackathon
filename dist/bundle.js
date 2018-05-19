@@ -28989,7 +28989,8 @@ var Dancer = function (_React$Component) {
 
     _this.state = {
       responsive: false,
-      autoplay: false
+      autoplay: false,
+      slideCount: 0
     };
     _this.onPlay = _this.onPlay.bind(_this);
     return _this;
@@ -28998,14 +28999,26 @@ var Dancer = function (_React$Component) {
   _createClass(Dancer, [{
     key: 'onPlay',
     value: function onPlay() {
-      if (this.state.autoplay) {
+      var _this2 = this;
+
+      var _state = this.state,
+          autoplay = _state.autoplay,
+          slideCount = _state.slideCount;
+
+      if (autoplay) {
         this.setState({ autoplay: false });
         clearInterval(this.interval);
       } else {
         this.setState({ autoplay: true });
         this.interval = setInterval(function () {
-          return console.log('image');
-        }, 1000);
+          var imageTotal = _this2.props.dancerImages.length - 1;
+          if (slideCount > imageTotal) {
+            slideCount = 0;
+            _this2.setState({ slideCount: slideCount });
+          } else {
+            return _this2.setState({ slideCount: slideCount++ });
+          }
+        }, 180);
       }
     }
   }, {
@@ -29014,7 +29027,9 @@ var Dancer = function (_React$Component) {
       var _props = this.props,
           dancerImages = _props.dancerImages,
           dancer = _props.dancer;
-      var autoplay = this.state.autoplay;
+      var _state2 = this.state,
+          autoplay = _state2.autoplay,
+          slideCount = _state2.slideCount;
       var onPlay = this.onPlay;
 
       var playButton = autoplay === true ? 'Pause' : 'Play';
@@ -29056,11 +29071,12 @@ var Dancer = function (_React$Component) {
         _react2.default.createElement(
           'div',
           { className: 'fadein' },
-          dancerImages && dancerImages.map(function (image) {
+          dancerImages && dancerImages.map(function (image, index) {
+            var className = slideCount === index ? "" : "is-hidden";
             return _react2.default.createElement(
               'div',
               { key: image.id },
-              _react2.default.createElement('img', { src: image.name }),
+              _react2.default.createElement('img', { className: className, src: image.name }),
               _react2.default.createElement('br', null)
             );
           })

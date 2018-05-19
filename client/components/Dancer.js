@@ -7,24 +7,34 @@ class Dancer extends React.Component {
     super(props);
     this.state = {
       responsive: false,
-      autoplay: false
+      autoplay: false,
+      slideCount: 0
     };
     this.onPlay = this.onPlay.bind(this);
   }
 
   onPlay(){
-    if(this.state.autoplay){
+    let { autoplay, slideCount } =this.state;
+    if(autoplay){
       this.setState({autoplay:false});
       clearInterval(this.interval);
     } else {
       this.setState({autoplay:true});
-      this.interval = setInterval(()=>console.log('image'), 1000);
+      this.interval = setInterval(()=>{
+        const imageTotal = this.props.dancerImages.length - 1;
+        if(slideCount>imageTotal){
+          slideCount = 0;
+         this.setState({slideCount:slideCount});
+        } else {
+         return this.setState({slideCount:slideCount++});
+        }
+      }, 180);
     }
   }
 
   render() {
     const { dancerImages, dancer } = this.props;
-    const { autoplay } = this.state;
+    const { autoplay, slideCount } = this.state;
     const { onPlay } = this;
     const playButton = autoplay === true ? 'Pause' : 'Play';
     if (dancerImages.length === 0) {
@@ -45,10 +55,11 @@ class Dancer extends React.Component {
         {/* className breaks this^ button? */}
         <div className='fadein'>
           {dancerImages &&
-            dancerImages.map(image => {
+            dancerImages.map((image, index) => {
+              const className = slideCount === index ? "" : "is-hidden";
               return (
                 <div key={image.id} >
-                  <img src={image.name} />
+                  <img className={className} src={image.name} />
                   <br />
                 </div>
               );
