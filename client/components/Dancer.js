@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import listen from './listen';
 
 class Dancer extends React.Component {
   constructor(props) {
@@ -13,11 +12,10 @@ class Dancer extends React.Component {
     };
     this.onPlay = this.onPlay.bind(this);
     this.onListen = this.onListen.bind(this);
+    this.onMediaStream = this.onMediaStream.bind(this);
+    this.onAudioProcess = this.onAudioProcess.bind(this);
+    this.changeImage = this.changeImage.bind(this);
   }
-
-  // componentDidMount(){
-  //   //this.respond = listen();
-  // }
 
   onPlay(){
     let { autoplay, slideCount } =this.state;
@@ -38,32 +36,62 @@ class Dancer extends React.Component {
     }
   }
 
-  onListen() {
-    let { slideCount } =this.state;
-    if(this.state.responsive){
-      console.log(listen());
-      if(listen()){
-        console.log('changing image');
-        const imageTotal = this.props.dancerImages.length - 1;
-        if(slideCount>=imageTotal){
-          slideCount = 0;
-         this.setState({slideCount:slideCount});
-        } else {
-         return this.setState({slideCount:slideCount++});
-        }
-      }
-    } else {
+  onListen(e){
+    if(!this.state.responsive){
+      this.audioContext = new AudioContext();
+      navigator.getUserMedia({audio: true}, this.onMediaStream, (err)=>console.log(err));
       this.setState({responsive:true});
+    }else{
+      if(this.audioContext){this.audioContext.close();}
+      this.setState({responsive:false});
+    }
+  }
 
+  onMediaStream(stream){
+    const mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
+    const processor = this.audioContext.createScriptProcessor();
+    processor.volume = 0;
+    processor.onaudioprocess = this.onAudioProcess;
+    processor.connect(this.audioContext.destination);
+
+    mediaStreamSource.connect(processor);
+ }
+
+  onAudioProcess(e){
+    const buffer = e.inputBuffer.getChannelData(0);
+    let sum = 0;
+    let x;
+
+    for (let i = 0; i < buffer.length; i++) {
+      x = Math.abs(buffer[i]);
+      sum += x * x;
     }
+
+    let average = sum / buffer.length;
+
+  if(Math.floor(average * 1500)>100){
+    this.changeImage();
+  }
+}
+
+  changeImage(){
+    let { slideCount } =this.state;
+    const imageTotal = this.props.dancerImages.length - 1;
+    if(slideCount>=imageTotal){
+      slideCount = 0;
+      this.setState({slideCount:slideCount});
+    } else {
+      slideCount++;
+      this.setState({slideCount:slideCount});
     }
+  }
 
   render() {
     const { dancerImages, dancer } = this.props;
     const { autoplay, slideCount, responsive } = this.state;
     const { onPlay, onListen } = this;
     const playButton = autoplay === true ? 'Pause' : 'Play';
-    const toggleButton = responsive ? 'Mic On' : 'Mic Off';
+    const toggleButton = responsive ? 'Mic Off' : 'Mic On';
     if (dancerImages.length === 0) {
       return (
         <div className="container">

@@ -9,7 +9,7 @@ const Home = ()=> {
         <img src={ '/images/roboCop1.jpg' } />
         <br />
         <br />
-        <Link to='/images/dancers'className="btn btn-outline-dark"><h2> Choose Your Dancer &#128378;</h2></Link>
+        <Link to='/dancers'className="btn btn-outline-dark"><h2> Choose Your Dancer &#128378;</h2></Link>
       </center>
     </div>
   );

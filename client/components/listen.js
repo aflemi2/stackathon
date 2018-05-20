@@ -5,6 +5,7 @@ const toggleEffectsButton = document.getElementById("toggle-button");
 /* Globals */
 let audioContext;
 let micSensitivityValue = 1500;
+//micSensitivityValueRange.value;
 let on = false;
 
 /* Event handlers */
@@ -68,7 +69,6 @@ detectAudio(this.volume);
 function detectAudio(micValue){
 if(micValue>100){
   console.log('I hear ya.');
-  return true;
 }
 }
 };

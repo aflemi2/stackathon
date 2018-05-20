@@ -28763,7 +28763,7 @@ var Home = function Home() {
       _react2.default.createElement('br', null),
       _react2.default.createElement(
         _reactRouterDom.Link,
-        { to: '/images/dancers', className: 'btn btn-outline-dark' },
+        { to: '/dancers', className: 'btn btn-outline-dark' },
         _react2.default.createElement(
           'h2',
           null,
@@ -28971,10 +28971,6 @@ var _reactRedux = __webpack_require__(8);
 
 var _reactRouterDom = __webpack_require__(9);
 
-var _listen = __webpack_require__(141);
-
-var _listen2 = _interopRequireDefault(_listen);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -28998,12 +28994,11 @@ var Dancer = function (_React$Component) {
     };
     _this.onPlay = _this.onPlay.bind(_this);
     _this.onListen = _this.onListen.bind(_this);
+    _this.onMediaStream = _this.onMediaStream.bind(_this);
+    _this.onAudioProcess = _this.onAudioProcess.bind(_this);
+    _this.changeImage = _this.changeImage.bind(_this);
     return _this;
   }
-
-  // componentDidMount(){
-  //   //this.respond = listen();
-  // }
 
   _createClass(Dancer, [{
     key: 'onPlay',
@@ -29032,23 +29027,61 @@ var Dancer = function (_React$Component) {
     }
   }, {
     key: 'onListen',
-    value: function onListen() {
+    value: function onListen(e) {
+      if (!this.state.responsive) {
+        this.audioContext = new AudioContext();
+        navigator.getUserMedia({ audio: true }, this.onMediaStream, function (err) {
+          return console.log(err);
+        });
+        this.setState({ responsive: true });
+      } else {
+        if (this.audioContext) {
+          this.audioContext.close();
+        }
+        this.setState({ responsive: false });
+      }
+    }
+  }, {
+    key: 'onMediaStream',
+    value: function onMediaStream(stream) {
+      var mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
+      var processor = this.audioContext.createScriptProcessor();
+      processor.volume = 0;
+      processor.onaudioprocess = this.onAudioProcess;
+      processor.connect(this.audioContext.destination);
+
+      mediaStreamSource.connect(processor);
+    }
+  }, {
+    key: 'onAudioProcess',
+    value: function onAudioProcess(e) {
+      var buffer = e.inputBuffer.getChannelData(0);
+      var sum = 0;
+      var x = void 0;
+
+      for (var i = 0; i < buffer.length; i++) {
+        x = Math.abs(buffer[i]);
+        sum += x * x;
+      }
+
+      var average = sum / buffer.length;
+
+      if (Math.floor(average * 1500) > 100) {
+        this.changeImage();
+      }
+    }
+  }, {
+    key: 'changeImage',
+    value: function changeImage() {
       var slideCount = this.state.slideCount;
 
-      if (this.state.responsive) {
-        console.log((0, _listen2.default)());
-        if ((0, _listen2.default)()) {
-          console.log('changing image');
-          var imageTotal = this.props.dancerImages.length - 1;
-          if (slideCount >= imageTotal) {
-            slideCount = 0;
-            this.setState({ slideCount: slideCount });
-          } else {
-            return this.setState({ slideCount: slideCount++ });
-          }
-        }
+      var imageTotal = this.props.dancerImages.length - 1;
+      if (slideCount >= imageTotal) {
+        slideCount = 0;
+        this.setState({ slideCount: slideCount });
       } else {
-        this.setState({ responsive: true });
+        slideCount++;
+        this.setState({ slideCount: slideCount });
       }
     }
   }, {
@@ -29065,7 +29098,7 @@ var Dancer = function (_React$Component) {
           onListen = this.onListen;
 
       var playButton = autoplay === true ? 'Pause' : 'Play';
-      var toggleButton = responsive ? 'Mic On' : 'Mic Off';
+      var toggleButton = responsive ? 'Mic Off' : 'Mic On';
       if (dancerImages.length === 0) {
         return _react2.default.createElement(
           'div',
@@ -29147,87 +29180,6 @@ var mapStateToProps = function mapStateToProps(_ref, _ref2) {
 };
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(Dancer);
-
-/***/ }),
-/* 141 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function () {
-
-  var toggleEffectsButton = document.getElementById("toggle-button");
-
-  /* Globals */
-  var audioContext = void 0;
-  var micSensitivityValue = 1500;
-  var on = false;
-
-  /* Event handlers */
-  toggleEffectsButton.addEventListener("click", toggleEffects);
-
-  /* Helper functions */
-  function toggleEffects(e) {
-    if (!on) {
-      on = true;
-      audioContext = new AudioContext();
-      navigator.getUserMedia({ audio: true }, handleUserMediaStream, handleUserMediaError);
-    } else {
-      reset();
-    }
-  }
-
-  function reset() {
-    on = false;
-    audioContext.close();
-  }
-
-  function handleUserMediaStream(stream) {
-    var mediaStreamSource = audioContext.createMediaStreamSource(stream);
-    var processor = createProcessor();
-
-    mediaStreamSource.connect(processor);
-  }
-
-  function handleUserMediaError(err) {
-    console.log(err);
-  }
-
-  function createProcessor() {
-    var processor = audioContext.createScriptProcessor();
-    processor.volume = 0;
-
-    processor.onaudioprocess = handleAudioProcess;
-    processor.connect(audioContext.destination);
-
-    return processor;
-  }
-
-  function handleAudioProcess(e) {
-    var buffer = e.inputBuffer.getChannelData(0);
-
-    var sum = 0;
-    var x = void 0;
-
-    for (var i = 0; i < buffer.length; i++) {
-      x = Math.abs(buffer[i]);
-      sum += x * x;
-    }
-
-    var average = sum / buffer.length;
-    this.volume = Math.floor(average * micSensitivityValue);
-
-    detectAudio(this.volume);
-  }
-
-  function detectAudio(micValue) {
-    if (micValue > 100) {
-      console.log('I hear ya.');
-      return true;
-    }
-  }
-};
 
 /***/ })
 /******/ ]);
