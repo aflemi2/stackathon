@@ -17,42 +17,45 @@ class Dancer extends React.Component {
     this.changeImage = this.changeImage.bind(this);
   }
 
-  componentWillUnmount(){ //Toggles off setInterval when user leaves page.
+  //add music button var audio = new Audio('audio_file.mp3');
+//audio.play(); audio.pause();
+
+  componentWillUnmount() { //Toggles setInterval off when user leaves page.
     clearInterval(this.interval);
-    if(this.audioContext){this.audioContext.close();}
+    if (this.audioContext) { this.audioContext.close(); }
   }
 
-  onPlay(){ //Auto play images in order.
-    let { autoplay, slideCount } =this.state;
-    if(autoplay){
-      this.setState({autoplay:false});
+  onPlay() { //Auto play images in order.
+    let { autoplay, slideCount } = this.state;
+    if (autoplay) {
+      this.setState({ autoplay: false });
       clearInterval(this.interval);
     } else {
-      this.setState({autoplay:true});
-      this.interval = setInterval(()=>{
+      this.setState({ autoplay: true });
+      this.interval = setInterval(() => {
         const imageTotal = this.props.dancerImages.length - 1;
-        if(slideCount>=imageTotal){
+        if (slideCount >= imageTotal) {
           slideCount = 0;
-         this.setState({slideCount:slideCount});
+          this.setState({ slideCount: slideCount });
         } else {
-         return this.setState({slideCount:slideCount++});
+          return this.setState({ slideCount: slideCount++ });
         }
       }, 180);
     }
   }
 
-  onListen(e){ //Animate images with audio input from mic.
-    if(!this.state.responsive){
+  onListen() { //Animate images with audio input from mic.
+    if (!this.state.responsive) {
       this.audioContext = new AudioContext();
-      navigator.getUserMedia({audio: true}, this.onMediaStream, (err)=>console.log(err));
-      this.setState({responsive:true});
-    }else{
-      if(this.audioContext){this.audioContext.close();}
-      this.setState({responsive:false});
+      navigator.getUserMedia({ audio: true }, this.onMediaStream, (err) => console.log(err));
+      this.setState({ responsive: true });
+    } else {
+      if (this.audioContext) { this.audioContext.close(); }
+      this.setState({ responsive: false });
     }
   }
 
-  onMediaStream(stream){ // Connects audio stream to be processed.
+  onMediaStream(stream) { // Connects audio stream to be processed.
     const mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
     const processor = this.audioContext.createScriptProcessor();
     processor.volume = 0;
@@ -60,9 +63,9 @@ class Dancer extends React.Component {
     processor.connect(this.audioContext.destination);
 
     mediaStreamSource.connect(processor);
- }
+  }
 
-  onAudioProcess(e){ // Processes the first channel to create an audio snippet(buffer)
+  onAudioProcess(e) { // Processes the first channel to create an audio snippet(buffer)
     const buffer = e.inputBuffer.getChannelData(0);
     let sum = 0;
     let x;
@@ -74,20 +77,20 @@ class Dancer extends React.Component {
 
     let average = sum / buffer.length;
 
-  if(Math.floor(average * 1500)>100){ // If buffer is above 100 change the image.
-    this.changeImage();
+    if (Math.floor(average * 1500) > 100) { //Buffer length(Audio frames) is above 100 change image.
+      this.changeImage();
+    }
   }
-}
 
-  changeImage(){
-    let { slideCount } =this.state;
+  changeImage() {
+    let { slideCount } = this.state;
     const imageTotal = this.props.dancerImages.length - 1;
-    if(slideCount>=imageTotal){
+    if (slideCount >= imageTotal) {
       slideCount = 0;
-      this.setState({slideCount:slideCount});
+      this.setState({ slideCount: slideCount });
     } else {
       slideCount++;
-      this.setState({slideCount:slideCount});
+      this.setState({ slideCount: slideCount });
     }
   }
 
@@ -109,11 +112,11 @@ class Dancer extends React.Component {
     return (
       <div className="container">
         <Link to='/images/create' className="btn btn-outline-dark float-right">Add Images</Link>
-        <h2 className='titles' >{dancer && dancer.name}</h2>
+        <h2 className='titles' >{ dancer && dancer.name }</h2>
         <hr />
 
-        <button onClick={onPlay}>{playButton}</button>
-        <button onClick={onListen} id="toggle-button">{toggleButton}</button>
+        <button onClick = { onPlay }>{ playButton }</button>
+        <button onClick = { onListen } id = "toggle-button">{ toggleButton }</button>
         {/* className breaks this^ button? */}
         <div className='fadein'>
           {dancerImages &&

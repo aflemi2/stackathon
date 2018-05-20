@@ -29000,10 +29000,13 @@ var Dancer = function (_React$Component) {
     return _this;
   }
 
+  //add music button var audio = new Audio('audio_file.mp3');
+  //audio.play(); audio.pause();
+
   _createClass(Dancer, [{
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      //Toggles off setInterval when user leaves page.
+      //Toggles setInterval off when user leaves page.
       clearInterval(this.interval);
       if (this.audioContext) {
         this.audioContext.close();
@@ -29037,7 +29040,7 @@ var Dancer = function (_React$Component) {
     }
   }, {
     key: 'onListen',
-    value: function onListen(e) {
+    value: function onListen() {
       //Animate images with audio input from mic.
       if (!this.state.responsive) {
         this.audioContext = new AudioContext();
@@ -29080,7 +29083,7 @@ var Dancer = function (_React$Component) {
       var average = sum / buffer.length;
 
       if (Math.floor(average * 1500) > 100) {
-        // If buffer is above 100 change the image.
+        //Buffer length(Audio frames) is above 100 change image.
         this.changeImage();
       }
     }
