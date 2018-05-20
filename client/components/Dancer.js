@@ -8,21 +8,42 @@ class Dancer extends React.Component {
     this.state = {
       responsive: false,
       autoplay: false,
-      slideCount: 0
+      slideCount: 0,
+      music: false
     };
     this.onPlay = this.onPlay.bind(this);
     this.onListen = this.onListen.bind(this);
     this.onMediaStream = this.onMediaStream.bind(this);
     this.onAudioProcess = this.onAudioProcess.bind(this);
     this.changeImage = this.changeImage.bind(this);
+    this.onMusic = this.onMusic.bind(this);
   }
 
-  //add music button var audio = new Audio('audio_file.mp3');
-//audio.play(); audio.pause();
+  componentDidMount(){
+    this.audio = new Audio('/audio/superstarpartzero.mp3');
+  }
 
   componentWillUnmount() { //Toggles setInterval off when user leaves page.
     clearInterval(this.interval);
+    if (this.audio) {this.audio.pause();}
     if (this.audioContext) { this.audioContext.close(); }
+  }
+
+  onMusic() {
+    let { music } = this.state;
+    Audio.prototype.stop = function() {
+      this.pause();
+      this.currentTime = 0;
+  };
+    if(music){
+       if(this.audio){
+      this.audio.stop();
+    }
+      this.setState({music: false});
+    } else {
+      this.audio.play();
+      this.setState({music:true});
+    }
   }
 
   onPlay() { //Auto play images in order.
@@ -96,10 +117,11 @@ class Dancer extends React.Component {
 
   render() {
     const { dancerImages, dancer } = this.props;
-    const { autoplay, slideCount, responsive } = this.state;
-    const { onPlay, onListen } = this;
+    const { autoplay, slideCount, responsive, music } = this.state;
+    const { onPlay, onListen, onMusic } = this;
     const playButton = autoplay === true ? 'Pause' : 'Play';
     const toggleButton = responsive ? 'Mic Off' : 'Mic On';
+    const musicButtonClass = music ? 'playing' : '';
     if (dancerImages.length === 0) {
       return (
         <div className="container">
@@ -110,20 +132,22 @@ class Dancer extends React.Component {
     }
 
     return (
-      <div className="container">
+      <div className="container main">
         <Link to='/images/create' className="btn btn-outline-dark float-right">Add Images</Link>
         <h2 className='titles' >{ dancer && dancer.name }</h2>
         <hr />
-
         <button onClick = { onPlay }>{ playButton }</button>
         <button onClick = { onListen } id = "toggle-button">{ toggleButton }</button>
-        {/* className breaks this^ button? */}
+        <div className='float-right'>
+          <h3 className='titles'>Play Music</h3>
+          <img onClick = {onMusic} src='/images/DJ_Turntable.png' className={musicButtonClass} />
+        </div>
         <div className='fadein'>
           {dancerImages &&
             dancerImages.map((image, index) => {
               const className = slideCount === index ? "" : "is-hidden";
               return (
-                <div key={image.id} >
+                <div className='main' key={image.id} >
                   <img className={className} src={image.name} />
                   <br />
                 </div>

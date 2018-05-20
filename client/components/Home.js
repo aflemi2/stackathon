@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Home = ()=> {
   return (
-    <div>
+    <div className='main'>
       <center>
         <h1>&#127925; Dancing Machine App &#127925;</h1>
         <img src={ '/images/roboCop1.jpg' } />

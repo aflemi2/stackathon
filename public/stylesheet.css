@@ -7,27 +7,15 @@ body {
 	font-family: Permanent Marker;
 }
 
-.fadein { position:relative; height:300px;  }
+.fadein { position:relative; height:300px; z-index: -1; }
 .fadein img { position:absolute; left:0; top:0; transition:opacity 20ms; opacity:1; }
 .fadein img.is-hidden { opacity:0; }
 
-/* #effects-controls {
-	width: 20%;
-	display: inline-block;
-	padding: 15px;
-	vertical-align: top;
+.main {
+	width: 650px;
+	margin: 0 auto;
 }
 
-#image-div {
-	width: 70%;
-	display: inline-block;
-	padding: 15px;
+.playing {
+	filter: invert(20%);
 }
-
-#target-image {
-	max-width: 90%;
-}
-
-.controller {
-	margin: 30px 0;
-} */

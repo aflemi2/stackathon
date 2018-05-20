@@ -28749,7 +28749,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Home = function Home() {
   return _react2.default.createElement(
     'div',
-    null,
+    { className: 'main' },
     _react2.default.createElement(
       'center',
       null,
@@ -28990,26 +28990,52 @@ var Dancer = function (_React$Component) {
     _this.state = {
       responsive: false,
       autoplay: false,
-      slideCount: 0
+      slideCount: 0,
+      music: false
     };
     _this.onPlay = _this.onPlay.bind(_this);
     _this.onListen = _this.onListen.bind(_this);
     _this.onMediaStream = _this.onMediaStream.bind(_this);
     _this.onAudioProcess = _this.onAudioProcess.bind(_this);
     _this.changeImage = _this.changeImage.bind(_this);
+    _this.onMusic = _this.onMusic.bind(_this);
     return _this;
   }
 
-  //add music button var audio = new Audio('audio_file.mp3');
-  //audio.play(); audio.pause();
-
   _createClass(Dancer, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.audio = new Audio('/audio/superstarpartzero.mp3');
+    }
+  }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       //Toggles setInterval off when user leaves page.
       clearInterval(this.interval);
+      if (this.audio) {
+        this.audio.pause();
+      }
       if (this.audioContext) {
         this.audioContext.close();
+      }
+    }
+  }, {
+    key: 'onMusic',
+    value: function onMusic() {
+      var music = this.state.music;
+
+      Audio.prototype.stop = function () {
+        this.pause();
+        this.currentTime = 0;
+      };
+      if (music) {
+        if (this.audio) {
+          this.audio.stop();
+        }
+        this.setState({ music: false });
+      } else {
+        this.audio.play();
+        this.setState({ music: true });
       }
     }
   }, {
@@ -29110,12 +29136,15 @@ var Dancer = function (_React$Component) {
       var _state2 = this.state,
           autoplay = _state2.autoplay,
           slideCount = _state2.slideCount,
-          responsive = _state2.responsive;
+          responsive = _state2.responsive,
+          music = _state2.music;
       var onPlay = this.onPlay,
-          onListen = this.onListen;
+          onListen = this.onListen,
+          onMusic = this.onMusic;
 
       var playButton = autoplay === true ? 'Pause' : 'Play';
       var toggleButton = responsive ? 'Mic Off' : 'Mic On';
+      var musicButtonClass = music ? 'playing' : '';
       if (dancerImages.length === 0) {
         return _react2.default.createElement(
           'div',
@@ -29135,7 +29164,7 @@ var Dancer = function (_React$Component) {
 
       return _react2.default.createElement(
         'div',
-        { className: 'container' },
+        { className: 'container main' },
         _react2.default.createElement(
           _reactRouterDom.Link,
           { to: '/images/create', className: 'btn btn-outline-dark float-right' },
@@ -29159,12 +29188,22 @@ var Dancer = function (_React$Component) {
         ),
         _react2.default.createElement(
           'div',
+          { className: 'float-right' },
+          _react2.default.createElement(
+            'h3',
+            { className: 'titles' },
+            'Play Music'
+          ),
+          _react2.default.createElement('img', { onClick: onMusic, src: '/images/DJ_Turntable.png', className: musicButtonClass })
+        ),
+        _react2.default.createElement(
+          'div',
           { className: 'fadein' },
           dancerImages && dancerImages.map(function (image, index) {
             var className = slideCount === index ? "" : "is-hidden";
             return _react2.default.createElement(
               'div',
-              { key: image.id },
+              { className: 'main', key: image.id },
               _react2.default.createElement('img', { className: className, src: image.name }),
               _react2.default.createElement('br', null)
             );
