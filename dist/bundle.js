@@ -29001,10 +29001,20 @@ var Dancer = function (_React$Component) {
   }
 
   _createClass(Dancer, [{
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      //Toggles off setInterval when user leaves page.
+      clearInterval(this.interval);
+      if (this.audioContext) {
+        this.audioContext.close();
+      }
+    }
+  }, {
     key: 'onPlay',
     value: function onPlay() {
       var _this2 = this;
 
+      //Auto play images in order.
       var _state = this.state,
           autoplay = _state.autoplay,
           slideCount = _state.slideCount;
@@ -29028,6 +29038,7 @@ var Dancer = function (_React$Component) {
   }, {
     key: 'onListen',
     value: function onListen(e) {
+      //Animate images with audio input from mic.
       if (!this.state.responsive) {
         this.audioContext = new AudioContext();
         navigator.getUserMedia({ audio: true }, this.onMediaStream, function (err) {
@@ -29044,6 +29055,7 @@ var Dancer = function (_React$Component) {
   }, {
     key: 'onMediaStream',
     value: function onMediaStream(stream) {
+      // Connects audio stream to be processed.
       var mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
       var processor = this.audioContext.createScriptProcessor();
       processor.volume = 0;
@@ -29055,6 +29067,7 @@ var Dancer = function (_React$Component) {
   }, {
     key: 'onAudioProcess',
     value: function onAudioProcess(e) {
+      // Processes the first channel to create an audio snippet(buffer)
       var buffer = e.inputBuffer.getChannelData(0);
       var sum = 0;
       var x = void 0;
@@ -29067,6 +29080,7 @@ var Dancer = function (_React$Component) {
       var average = sum / buffer.length;
 
       if (Math.floor(average * 1500) > 100) {
+        // If buffer is above 100 change the image.
         this.changeImage();
       }
     }

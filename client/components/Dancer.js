@@ -17,7 +17,12 @@ class Dancer extends React.Component {
     this.changeImage = this.changeImage.bind(this);
   }
 
-  onPlay(){
+  componentWillUnmount(){ //Toggles off setInterval when user leaves page.
+    clearInterval(this.interval);
+    if(this.audioContext){this.audioContext.close();}
+  }
+
+  onPlay(){ //Auto play images in order.
     let { autoplay, slideCount } =this.state;
     if(autoplay){
       this.setState({autoplay:false});
@@ -36,7 +41,7 @@ class Dancer extends React.Component {
     }
   }
 
-  onListen(e){
+  onListen(e){ //Animate images with audio input from mic.
     if(!this.state.responsive){
       this.audioContext = new AudioContext();
       navigator.getUserMedia({audio: true}, this.onMediaStream, (err)=>console.log(err));
@@ -47,7 +52,7 @@ class Dancer extends React.Component {
     }
   }
 
-  onMediaStream(stream){
+  onMediaStream(stream){ // Connects audio stream to be processed.
     const mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
     const processor = this.audioContext.createScriptProcessor();
     processor.volume = 0;
@@ -57,7 +62,7 @@ class Dancer extends React.Component {
     mediaStreamSource.connect(processor);
  }
 
-  onAudioProcess(e){
+  onAudioProcess(e){ // Processes the first channel to create an audio snippet(buffer)
     const buffer = e.inputBuffer.getChannelData(0);
     let sum = 0;
     let x;
@@ -69,7 +74,7 @@ class Dancer extends React.Component {
 
     let average = sum / buffer.length;
 
-  if(Math.floor(average * 1500)>100){
+  if(Math.floor(average * 1500)>100){ // If buffer is above 100 change the image.
     this.changeImage();
   }
 }
