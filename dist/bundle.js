@@ -28809,22 +28809,12 @@ var Images = function Images(_ref) {
         'h2',
         null,
         'All Images'
-      ),
-      _react2.default.createElement(
-        _reactRouterDom.Link,
-        { to: '/images/create', className: 'btn btn-outline-primary float-right' },
-        'Add Images'
       )
     );
   }
   return _react2.default.createElement(
     'div',
     { className: 'container' },
-    _react2.default.createElement(
-      _reactRouterDom.Link,
-      { to: '/images/create', className: 'btn btn-outline-primary float-right' },
-      'Add Images'
-    ),
     _react2.default.createElement(
       'h2',
       null,
@@ -28898,22 +28888,12 @@ var Dancers = function Dancers(_ref) {
         'h2',
         null,
         'Dancers'
-      ),
-      _react2.default.createElement(
-        _reactRouterDom.Link,
-        { to: '/dancers/create', className: 'btn btn-outline-primary float-right' },
-        'Add Dancer'
       )
     );
   }
   return _react2.default.createElement(
     'div',
     { className: 'container' },
-    _react2.default.createElement(
-      _reactRouterDom.Link,
-      { to: '/dancers/create', className: 'btn btn-outline-primary float-right' },
-      'Add Dancer'
-    ),
     _react2.default.createElement(
       'h2',
       null,
@@ -29142,7 +29122,7 @@ var Dancer = function (_React$Component) {
           onListen = this.onListen,
           onMusic = this.onMusic;
 
-      var playButton = autoplay === true ? 'Pause' : 'Play';
+      var playButton = autoplay === true ? 'Pause' : 'Auto Play';
       var toggleButton = responsive ? 'Mic Off' : 'Mic On';
       var musicButtonClass = music ? 'playing' : '';
       if (dancerImages.length === 0) {
@@ -29165,11 +29145,18 @@ var Dancer = function (_React$Component) {
       return _react2.default.createElement(
         'div',
         { className: 'container main' },
+        '        ',
         _react2.default.createElement(
-          _reactRouterDom.Link,
-          { to: '/images/create', className: 'btn btn-outline-dark float-right' },
-          'Add Images'
+          'h5',
+          null,
+          'Click \'Auto Play\' to animate the character automatically.'
         ),
+        _react2.default.createElement(
+          'h5',
+          null,
+          'Click \'Mic On\' to animate in response to sounds.'
+        ),
+        _react2.default.createElement('br', null),
         _react2.default.createElement(
           'h2',
           { className: 'titles' },

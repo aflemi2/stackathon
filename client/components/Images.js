@@ -7,13 +7,13 @@ const Images = ({ images, dancers }) => {
     return (
       <div className="container">
         <h2>All Images</h2>
-        <Link to='/images/create' className="btn btn-outline-primary float-right">Add Images</Link>
+        {/* <Link to='/images/create' className="btn btn-outline-primary float-right">Add Images</Link> */}
       </div>
     );
   }
   return (
     <div className="container">
-      <Link to='/images/create' className="btn btn-outline-primary float-right">Add Images</Link>
+      {/* <Link to='/images/create' className="btn btn-outline-primary float-right">Add Images</Link> */}
       <h2>Dancer Images</h2>
       <hr />
       <ul className="row">

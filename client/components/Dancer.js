@@ -119,7 +119,7 @@ class Dancer extends React.Component {
     const { dancerImages, dancer } = this.props;
     const { autoplay, slideCount, responsive, music } = this.state;
     const { onPlay, onListen, onMusic } = this;
-    const playButton = autoplay === true ? 'Pause' : 'Play';
+    const playButton = autoplay === true ? 'Pause' : 'Auto Play';
     const toggleButton = responsive ? 'Mic Off' : 'Mic On';
     const musicButtonClass = music ? 'playing' : '';
     if (dancerImages.length === 0) {
@@ -133,7 +133,9 @@ class Dancer extends React.Component {
 
     return (
       <div className="container main">
-        <Link to='/images/create' className="btn btn-outline-dark float-right">Add Images</Link>
+        {/* <Link to='/images/create' className="btn btn-outline-dark float-right">Add Images</Link> */}        <h5>Click 'Auto Play' to animate the character automatically.</h5>
+        <h5>Click 'Mic On' to animate in response to sounds.</h5>
+        <br />
         <h2 className='titles' >{ dancer && dancer.name }</h2>
         <hr />
         <button onClick = { onPlay }>{ playButton }</button>
